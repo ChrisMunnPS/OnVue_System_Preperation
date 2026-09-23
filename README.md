@@ -1,19 +1,26 @@
-# 🎓 OnVUE System Preparation Script
+# 🎓 OnVUE Exam Preparation Assistant
 
-**A PowerShell utility to prepare your Windows system for Pearson VUE OnVUE online proctored exams**
+**A PowerShell WPF GUI tool to prepare your Windows system for Pearson VUE OnVUE online proctored exams**
+
+---
 
 ## 📋 Executive Summary
 
-Taking an online proctored exam can be stressful, especially when technical issues prevent you from starting on time. This script automates the tedious process of closing interfering applications, stopping conflicting services, and preparing your Windows system for Pearson VUE's OnVUE proctoring software.
+Online proctored exams fail for technical reasons more often than they should — a background VM, a screen recorder, an open VPN, or a stray Teams call can be enough to delay or terminate a session. **OnVUE Exam Preparation Assistant** is a self-contained PowerShell/WPF application that scans your system for exactly the things Pearson VUE's OnVUE proctoring software cares about, and lets you clean them up with a few clicks — nothing closes or stops without your say-so.
 
 **Key Features:**
-- 🔍 **Safe Pre-Flight Check** - Scan your system without making any changes
-- 🎯 **Targeted Cleanup** - Choose between critical-only or comprehensive preparation
-- 🛡️ **Safety First** - Confirms before closing processes, attempts graceful shutdown
-- 🔄 **Service Restoration** - Easily restart services after your exam
-- ✅ **Final Checklist** - Ensures you haven't missed anything before starting
 
-**Perfect for:** Students, IT professionals, and anyone taking Pearson VUE OnVUE proctored exams who want to minimize technical issues and start their exam with confidence.
+- 🔍 **Pre-Flight Check** — scan everything with zero changes made
+- ☑️ **Opt-in, not all-or-nothing** — every process and service is a checkbox you control
+- 🖥️ **Live hardware checks** — monitor count, webcam, and microphone detection
+- 🔐 **One-click elevation** — relaunch as Administrator without leaving the app
+- 🚫 **High-risk software scan** — flags anything that will actively terminate your exam
+- 🔄 **Session tracking & restore** — everything stopped can be restarted afterward
+- 📝 **Exportable report** — save a full session log for your records
+
+**Perfect for:** Students, certification candidates, and IT professionals taking Pearson VUE OnVUE proctored exams who want a predictable, low-drama way to get their system exam-ready.
+
+> ⚠️ This is an **unofficial, community-built tool** and is not affiliated with, endorsed by, or connected to Pearson VUE.
 
 ---
 
@@ -23,86 +30,83 @@ Taking an online proctored exam can be stressful, especially when technical issu
 - [Requirements](#-requirements)
 - [Installation](#-installation)
 - [Usage](#-usage)
-- [Menu Options](#-menu-options)
-- [What Gets Closed/Stopped](#-what-gets-closedstopped)
-- [Safety Features](#-safety-features)
+- [Interface Overview](#️-interface-overview)
+- [What Gets Closed / Stopped](#-what-gets-closed--stopped)
+- [Safety Features](#️-safety-features)
 - [Best Practices](#-best-practices)
 - [Troubleshooting](#-troubleshooting)
+- [Changelog](#-changelog)
 - [Contributing](#-contributing)
-- [Disclaimer](#-disclaimer)
+- [Disclaimer](#️-disclaimer)
 - [License](#-license)
+- [Support](#-support)
 
 ---
 
 ## ✨ Features
 
-### 🔍 Pre-Flight Check Mode
-Run a complete system scan without making any changes. See exactly what processes and services are running that might interfere with your exam.
+### 🔍 Pre-Flight Check
+Scans processes, services, and VPN status with **no changes made**, and populates the Processes and Services tabs so you can review everything before touching anything.
 
-### 🎯 Flexible Preparation Options
-- **Critical Only** - Close only the most problematic applications (VMs, screen recorders, remote desktop)
-- **Comprehensive** - Close all potentially interfering applications
-- **Custom** - Pick and choose which preparation steps to run
+### ☑️ Opt-In Process & Service Control
+Every detected process and service appears as a checkbox in a list, categorized as **Critical**, **Standard**, or **Office**. Nothing closes unless you select it (Critical items are pre-checked as a starting point; you can change that). Closing Office apps (Word/Excel/PowerPoint/Outlook) requires a separate confirmation since it risks unsaved work.
 
-### 🛡️ Safety Mechanisms
-- **User Confirmation** - Asks before making system changes
-- **Graceful Shutdown** - Tries to close applications normally before force-killing
-- **Session Tracking** - Remembers what was closed/stopped for easy restoration
-- **Skip Current Script** - Won't close its own PowerShell process
+### 🛡️ High-Risk Software Scan
+Specifically flags applications — VMs, screen recorders, remote-desktop tools, packet sniffers — that **will** cause exam termination if detected, with a clear red banner when found.
 
-### 📊 Visual Feedback
-- Color-coded messages (Success, Warning, Error, Info)
-- Progress indicators for each operation
-- Clear summary of actions taken
-- Professional menu interface
+### 🌐 Optimize & VPN Tab
+- VPN/TAP adapter detection (only flags adapters that are actually up)
+- Temp file cleanup with an item count
+- Network connectivity check
+- One-click link to Windows' real Focus Assist settings (no unsupported registry hacks)
 
-### 🔄 Post-Exam Restoration
-Easily restart all services that were stopped during preparation with a single menu option.
+### 🖥️ Live System Checks
+On the Summary tab: monitor count, webcam presence, and microphone presence, each with a pass/warn/fail indicator. (Webcam/mic detection is device-class and name based — a best-effort signal, not a hardware test.)
+
+### 🔐 Self-Elevation
+If launched without Administrator rights, a **Relaunch as Admin** button appears in the header and reopens the tool elevated via UAC — no need to close and manually restart it.
+
+### 📝 Session Summary & Export
+Tracks everything closed/stopped this session, lets you restore stopped services in one click, and exports a full text report (including the activity log) for your records.
+
+### 📜 Activity Log
+A persistent, timestamped log of every action taken, visible at all times at the bottom of the window.
 
 ---
 
 ## 💻 Requirements
 
 - **Operating System**: Windows 10 or Windows 11
-- **PowerShell**: Version 5.1 or higher (comes with Windows)
-- **Permissions**: Administrator privileges recommended (not required for basic functions)
-- **Execution Policy**: May need to be adjusted to run scripts
+- **PowerShell**: Version 5.1 or higher (included with Windows)
+- **.NET / WPF**: Included with Windows — no separate install
+- **Permissions**: Administrator recommended for full functionality (required to stop/start services); the app will prompt you to relaunch elevated if needed
 
 ---
 
 ## 📥 Installation
 
 ### Option 1: Direct Download
-
-1. Download the script file `OnVUE-Prep.ps1` from this repository
+1. Download `OnVue_System_Preperation.ps1` from this repository
 2. Save it to a convenient location (e.g., `C:\Scripts\` or your Desktop)
-3. Right-click the file and select "Run with PowerShell" **as Administrator**
+3. Right-click the file and select **Run with PowerShell**
 
 ### Option 2: Git Clone
-
-```bash
-git clone https://github.com/yourusername/onvue-system-prep.git
-cd onvue-system-prep
-```
-
-Then run with PowerShell as Administrator:
-
 ```powershell
-.\OnVUE-Prep.ps1
+git clone https://github.com/ChrisMunnPS/OnVue_System_Preperation.git
+cd OnVue_System_Preperation
+.\OnVue_System_Preperation.ps1
 ```
 
 ### Setting Execution Policy (if needed)
-
-If Windows prevents you from running the script, you may need to adjust the execution policy:
-
+If Windows blocks the script from running:
 ```powershell
 # Check current policy
 Get-ExecutionPolicy
 
-# Allow scripts for current user (recommended)
+# Allow locally-created scripts for the current user (recommended)
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 
-# Or allow for single session only
+# Or allow for a single session only
 Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process
 ```
 
@@ -111,341 +115,195 @@ Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process
 ## 🚀 Usage
 
 ### Quick Start
-
-1. **Save all your work** - The script will close applications
-2. **Right-click PowerShell** and select "Run as Administrator"
-3. **Navigate to the script location**:
-   ```powershell
-   cd C:\Path\To\Script
-   ```
-4. **Run the script**:
-   ```powershell
-   .\OnVUE-Prep.ps1
-   ```
-5. **Start with Option 1** (Pre-Flight Check) to see what needs attention
-6. **Choose Option 7** for full preparation when ready
+1. **Save all your open work** — the app will close applications you select
+2. Run `.\OnVue_System_Preperation.ps1` (as Administrator for full functionality, or use **Relaunch as Admin** inside the app)
+3. Go to the **Pre-Flight** tab and click **Run Pre-Flight Check**
+4. Review what's found on the **Processes** and **Services** tabs, adjust checkboxes as needed
+5. Click **Run Full Preparation** in the header for an end-to-end pass, or work through tabs individually
+6. Check the **Summary** tab before starting your exam
+7. After your exam, reopen the app and click **Restore Stopped Services**
 
 ### Recommended Workflow
-
 ```
-1️⃣ Option 1: Pre-Flight Check
-    ↓
-2️⃣ Manually save all open work
-    ↓
-3️⃣ Option 7: Full Preparation
-    ↓
-4️⃣ Option 9: View Summary
-    ↓
-5️⃣ Close PowerShell window
-    ↓
-6️⃣ Start OnVUE exam
-    ↓
-7️⃣ After exam: Run script again → Option 8: Restore Services
-```
-
----
-
-## 🎛️ Menu Options
-
-```
-1. Run Pre-Flight Check (Safe - No Changes)
-   → Scans system and reports what's running without making changes
-   → Perfect for first-time users to see what the script will do
-
-2. Close Critical Processes Only (Recommended)
-   → Closes VMs, screen recorders, remote desktop, packet sniffers
-   → Quick and focused on the most problematic software
-
-3. Close All Interfering Processes (Comprehensive)
-   → Closes browsers, communication apps, media players, and more
-   → Most thorough option for maximum compatibility
-
-4. Stop Interfering Services
-   → Temporarily stops background services
-   → Requires Administrator privileges
-
-5. Optimize System (Notifications, Temp Files)
-   → Clears temporary files
-   → Checks network connectivity
-   → Provides guidance on Focus Assist
-
-6. Check for High-Risk Software
-   → Scans for software that WILL cause exam termination
-   → Provides critical warnings if detected
-
-7. Full Preparation (All Tasks)
-   → Runs options 1-6 in sequence
-   → Comprehensive preparation for your exam
-
-8. Restore Stopped Services
-   → Restarts services that were stopped during this session
-   → Run after your exam is complete
-
-9. View Preparation Summary
-   → Shows what was done during this session
-   → Displays final pre-exam checklist
-
-0. Exit
-   → Closes the script
+1️⃣  Pre-Flight tab → Run Pre-Flight Check
+     ↓
+2️⃣  Save all open work manually
+     ↓
+3️⃣  Header → Run Full Preparation (confirm the prompt)
+     ↓
+4️⃣  Summary tab → Run System Checks, review final checklist
+     ↓
+5️⃣  Close the app
+     ↓
+6️⃣  Start your OnVUE exam
+     ↓
+7️⃣  After the exam: reopen → Summary tab → Restore Stopped Services
 ```
 
 ---
 
-## 🚫 What Gets Closed/Stopped
+## 🖥️ Interface Overview
 
-### Critical Processes (High Priority)
-These **WILL** cause exam issues if running:
+| Tab | Purpose |
+|---|---|
+| **Pre-Flight** | Read-only scan of processes, services, and VPN status |
+| **Processes** | Checkbox list of detected processes by category; close selected |
+| **Services** | Checkbox list of detected interfering services; stop selected (Admin required) |
+| **Optimize & VPN** | VPN check, temp file cleanup, network check, Focus Assist link |
+| **High-Risk Scan** | Dedicated scan for exam-terminating software, with a warning banner |
+| **Summary & Export** | Session stats, live monitor/webcam/mic checks, service restore, report export, final checklist |
+| **About** | Version and changelog |
 
-- **Virtual Machines**: VMware, VirtualBox, Hyper-V, Docker
-- **Screen Recording**: OBS, XSplit, Bandicam, Camtasia, Fraps
-- **Remote Desktop**: TeamViewer, AnyDesk, VNC, Chrome Remote Desktop
-- **Network Analysis**: Wireshark, Fiddler, Charles Proxy
+---
 
-### Standard Processes (Should Close)
-These applications may interfere:
+## 🚫 What Gets Closed / Stopped
 
+### 🔴 Critical Processes (pre-selected)
+These will very likely interfere with proctoring:
+- **Virtual Machines**: VMware, VirtualBox, Hyper-V (`vmms`/`vmcompute`), Docker
+- **Screen Recording**: OBS, XSplit, Bandicam, Camtasia, Snagit, Fraps
+- **Remote Desktop**: TeamViewer, AnyDesk, VNC, Chrome Remote Desktop, Parsec
+- **Network Analysis**: Wireshark, Fiddler, Charles Proxy, Burp Suite
+
+### 🟡 Standard Processes (opt-in)
+Recommended to close but not selected by default:
 - **Browsers**: Chrome, Firefox, Edge, Opera, Brave
-- **Communication**: Teams, Slack, Discord, Zoom, Skype
+- **Communication**: Teams, Slack, Discord, Zoom, Skype, WhatsApp, Telegram, Signal
 - **Media**: Spotify, iTunes, VLC
-- **Gaming**: Steam, Epic Games, Origin
-- **Development**: VS Code, Visual Studio, IntelliJ
-- **Cloud Storage**: Dropbox, OneDrive, Google Drive
+- **Gaming**: Steam, Epic Games Launcher, Origin, Battle.net
+- **Development**: VS Code, Notepad++, Sublime Text
+- **Cloud Storage**: Dropbox, Google Drive, OneDrive
 - **VPN Clients**: NordVPN, ExpressVPN, OpenVPN
-- **Office Apps**: Word, Excel, PowerPoint, Outlook
 
-### Services Stopped
-Background services that may conflict:
+### 🟣 Office Apps (opt-in, separately confirmed)
+Word, Excel, PowerPoint, Outlook — only closed if you enable this and confirm, since it risks unsaved work.
 
-- Remote desktop services
-- Cloud sync services
-- Virtual machine services
-- VPN services
-- Gaming platform services
-- Backup software services
+### ⚙️ Services (Administrator required)
+TeamViewer, AnyDesk, VNC, VMware, VirtualBox, Docker, NordVPN, ExpressVPN, OpenVPN, and EaseUS-related services, when actually running.
 
 ---
 
 ## 🛡️ Safety Features
 
-### User Confirmation
-The script asks for confirmation before:
-- Closing processes
-- Stopping services
-- Running full preparation
-
-### Graceful Shutdown
-For each process:
-1. First attempts to close the application normally (allowing save prompts)
-2. Waits 750ms for graceful exit
-3. Only force-kills if the application refuses to close
-
-### Protection Mechanisms
-- **Won't close itself** - Skips the PowerShell process running the script
-- **Error handling** - Continues if individual operations fail
-- **Detailed logging** - Shows exactly what succeeded and what failed
-- **No data modification** - Only closes processes and stops services (reversible)
-
-### Session Tracking
-The script remembers:
-- Which processes were closed
-- Which services were stopped
-- Allows easy restoration after your exam
+- **Nothing closes without your selection** — checkboxes, not blanket actions
+- **Separate confirmation for Office apps and for Full Preparation**
+- **Graceful-then-forced close** — attempts a normal window close first, only force-kills if the app doesn't respond
+- **Won't close itself** — skips the PowerShell process running the tool
+- **Session tracking** — remembers everything closed/stopped so you can review or restore it
+- **Exit warning** — if services are still stopped when you close the app, it asks first
+- **No destructive data operations** — only closes processes and stops services (both reversible)
 
 ---
 
 ## 💡 Best Practices
 
-### Before Running the Script
+**Before running:**
+✅ Save all open work
+✅ Run Pre-Flight Check first to see what will be affected
+✅ Read the activity log for warnings
 
-✅ **Save all your work** - The script will close applications without additional warning
+**During preparation:**
+✅ Run as Administrator (or use Relaunch as Admin) for full functionality
+✅ Stay connected to the internet
+✅ Review the Processes/Services lists before closing — don't just accept every default
 
-✅ **Close applications manually first** - It's safer to close apps yourself when possible
+**Before starting your exam:**
+✅ Check the Summary tab's live system checks (monitor, webcam, mic)
+✅ Work through the final checklist
+✅ Close the app itself before launching OnVUE
 
-✅ **Run Pre-Flight Check** - Use Option 1 to see what will be affected
-
-✅ **Read the output** - Pay attention to warnings and errors
-
-### During Preparation
-
-✅ **Run as Administrator** - Provides full functionality
-
-✅ **Stay connected** - Don't disconnect your internet during preparation
-
-✅ **Don't rush** - Review each step and its results
-
-### Before Starting Your Exam
-
-✅ **Run Option 9** - Review the final checklist
-
-✅ **Close PowerShell** - Don't leave the script running during your exam
-
-✅ **Test your webcam/mic** - Use OnVUE's system check
-
-✅ **Clear your workspace** - Remove prohibited items from your area
-
-### After Your Exam
-
-✅ **Restore services** - Run the script again and use Option 8
-
-✅ **Restart if needed** - A full restart ensures everything returns to normal
+**After your exam:**
+✅ Reopen the app and restore stopped services
+✅ Restart your computer if anything seems off afterward
 
 ---
 
 ## 🔧 Troubleshooting
 
-### Script Won't Run
-
-**Error: "Execution of scripts is disabled on this system"**
-
-Solution:
+**"Execution of scripts is disabled on this system"**
 ```powershell
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 ```
 
-### Some Operations Fail
+**Services won't stop, or the Services tab is empty of options**
+Run as Administrator — use the **Relaunch as Admin** button in the header, or right-click → *Run with PowerShell as Administrator*.
 
-**Issue: Services won't stop or processes won't close**
+**Webcam or microphone shows "not detected" but you have one**
+Detection is name/device-class based (via WMI), not a live hardware test — this is a known limitation, noted in the app itself. Verify manually, e.g. with OnVUE's own system check.
 
-Solutions:
-- Run PowerShell as Administrator
-- Close applications manually first
-- Restart your computer and try again
+**A closed application reopens on its own**
+It's likely set to auto-restart via a startup entry or a background service. Stop the related service on the Services tab, or check Task Manager → Startup.
 
-### Applications Restart Automatically
+**High-risk software won't close**
+Close it through its own interface first, stop its service if listed, or restart your computer.
 
-**Issue: Processes reappear after being closed**
+---
 
-Solutions:
-- Stop the related services (Option 4)
-- Disable the application from starting automatically (Task Manager → Startup)
-- Uninstall aggressive applications temporarily
+## 📝 Changelog
 
-### High-Risk Software Won't Close
+**1.1.0**
+- Added live system checks (monitor count, webcam, microphone) to the Summary tab
+- Added a "Relaunch as Admin" self-elevation button
 
-**Issue: Virtual machines or screen recorders persist**
-
-Solutions:
-- Close them through their own interface first
-- Stop their services (Option 4)
-- Restart your computer
-- Temporarily uninstall if necessary
-
-### After Exam: Services Won't Restore
-
-**Issue: Option 8 doesn't restart services**
-
-Solutions:
-- Restart your computer (services will auto-start)
-- Manually start services through Services.msc
-- Check if services are set to "Disabled" in Services.msc
+**1.0.0**
+- Full WPF GUI rewrite of the original console-menu script, including:
+  - Fixed a VPN-detection operator-precedence bug that could false-positive on any VPN-named adapter regardless of status
+  - Replaced the no-op "Focus Assist" step with a link to the real Windows settings page
+  - Split Office apps into their own opt-in category with explicit confirmation
+  - Removed service-list entries that never matched anything (OneDrive/Dropbox/Steam/Zoom aren't Windows services)
+  - Corrected several process names (`msedge`, `sublime_text`, `Code`, `vmms`/`vmcompute` for Hyper-V)
+  - Every close/stop action is opt-in via checkboxes instead of all-or-nothing
+  - Added report export and an unrestored-services warning on exit
 
 ---
 
 ## 🤝 Contributing
 
-Contributions are welcome! Here's how you can help:
+**Reporting issues:** open a GitHub issue with your Windows version, what happened vs. what you expected, and any error messages.
 
-### Reporting Issues
+**Suggesting features:** open an issue with the `enhancement` label describing the feature and why it'd help.
 
-If you encounter problems:
-1. Open an issue on GitHub
-2. Include your Windows version
-3. Describe what happened vs. what you expected
-4. Include any error messages (screenshot or copy/paste)
-
-### Suggesting Improvements
-
-Have ideas for new features?
-1. Open an issue with the "enhancement" label
-2. Describe the feature and why it would be helpful
-3. Provide examples if possible
-
-### Submitting Pull Requests
-
+**Pull requests:**
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+3. Commit your changes (`git commit -m 'Add AmazingFeature'`)
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-### Code Standards
-
-- Follow PowerShell best practices
-- Use approved verbs for functions (Get, Set, Test, Start, Stop, etc.)
-- Add comments for complex logic
-- Test thoroughly before submitting
+**Code standards:** follow PowerShell approved verbs (`Get-`, `Set-`, `Test-`, `Start-`, `Stop-`, etc.), comment non-obvious logic, and test on a real Windows machine before submitting.
 
 ---
 
 ## ⚠️ Disclaimer
 
-**This script is provided as-is, without warranty of any kind.**
+**This tool is provided as-is, without warranty of any kind.**
 
-- This is an **unofficial** tool and is **not affiliated with, endorsed by, or connected to Pearson VUE** in any way
-- The author is not responsible for any issues arising from use of this script
-- **Always follow official Pearson VUE guidelines** for system preparation
-- **Test this script before your actual exam** to ensure it works correctly on your system
-- **Backup important data** before running system preparation scripts
-- Some legitimate system processes may be closed; use at your own discretion
-- The script does not guarantee exam success or that OnVUE will function properly
-
-**Important Notes:**
-- Stopping services and closing processes can affect system functionality
-- Always save your work before running this script
-- Some applications may not function properly until services are restored or system is restarted
-- This script is intended for use on personal computers only
+- **Unofficial** — not affiliated with, endorsed by, or connected to Pearson VUE
+- The author is not responsible for issues arising from its use
+- Always follow official Pearson VUE system requirements and guidance
+- **Test this tool ahead of time**, not for the first time on exam day
+- Some legitimate processes may be closed — review selections before confirming
+- Intended for use on personal computers you control
 
 ---
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-```
-MIT License
-
-Copyright (c) 2025
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-```
-
----
-
-## 🙏 Acknowledgments
-
-- Inspired by the common struggles of test-takers dealing with OnVUE technical issues
-- Thanks to the PowerShell community for best practices and guidance
-- Built with the goal of reducing exam-day stress for students and professionals
+Licensed under the MIT License — see [LICENSE](https://github.com/ChrisMunnPS/OnVue_System_Preperation/blob/main/LICENSE) for details.
 
 ---
 
 ## 📞 Support
 
-- **Issues**: [GitHub Issues](https://github.com/ChrisMunnPS/onvue-system-preperation/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/ChrisMunnPS/onvue-system-preperation/discussions)
+- **Issues**: [GitHub Issues](https://github.com/ChrisMunnPS/OnVue_System_Preperation/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/ChrisMunnPS/OnVue_System_Preperation/discussions)
 - **Official OnVUE Support**: [Pearson VUE Support](https://home.pearsonvue.com/onvue)
 
 ---
 
 ## ⭐ Star This Repository
 
-If this script helped you, please consider giving it a star! It helps others discover the tool.
+If this tool helped you get exam-ready with less stress, a star helps others find it.
 
 ---
 

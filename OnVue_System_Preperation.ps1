@@ -8,7 +8,7 @@
     will cause exam termination if detected. All closes/stops are opt-in via
     checkboxes rather than all-or-nothing.
 .NOTES
-    Version:  1.1.0
+    Version:  1.2.0
     Run as Administrator for full functionality (required to stop/start services).
     Use the "Relaunch as Admin" button if you started it without elevation.
     See the "About" tab in the app for a changelog of fixes vs. the original
@@ -42,12 +42,14 @@ $Global:syncHash = [hashtable]::Synchronized(@{
 # best-effort basis - exact binary names can still vary by install/version.
 
 $script:CriticalProcesses = @(
-    'vmware', 'vmware-vmx', 'vmware-hostd', 'virtualbox', 'vboxheadless', 'vboxsvc',
+    'vmware', 'vmware-vmx', 'vmware-hostd', 'virtualbox', 'vboxheadless', 'vboxsvc', 'vmnetdhcp',
     'vmms', 'vmcompute', 'docker', 'dockerdesktop', 'com.docker.backend',
     'obs64', 'obs32', 'xsplit.core', 'streamlabs obs', 'bandicam', 'camtasia', 'snagit32', 'snagiteditor', 'fraps',
     'teamviewer', 'anydesk', 'winvnc', 'tvnserver', 'vncviewer',
     'chromeremotedesktophost', 'parsecd', 'srserver', 'srfeature',
-    'wireshark', 'fiddler', 'charles', 'burpsuite'
+    'wireshark', 'fiddler', 'charles', 'burpsuite',
+    'tailscale-ipn', 'tailscaled', 'usblcd',
+    'claude', 'claude-cowork'
 )
 
 $script:StandardProcesses = @(
@@ -63,11 +65,16 @@ $script:StandardProcesses = @(
 
 $script:OfficeProcesses = @('winword', 'excel', 'powerpnt', 'outlook')
 
+# vmnetdhcp / tailscale-ipn / tailscaled / usblcd / claude / claude-cowork were added
+# after OnVUE's own pre-launch check explicitly blocked on them ("The issues below
+# could prevent exam launch"), so they're treated as High-Risk, not just Critical.
 $script:HighRiskProcesses = @(
-    'vmware', 'vmware-vmx', 'virtualbox', 'vboxheadless', 'vmms', 'vmcompute', 'docker', 'dockerdesktop',
+    'vmware', 'vmware-vmx', 'virtualbox', 'vboxheadless', 'vmms', 'vmcompute', 'docker', 'dockerdesktop', 'vmnetdhcp',
     'obs64', 'obs32', 'bandicam', 'camtasia', 'snagit32', 'fraps',
     'teamviewer', 'anydesk', 'winvnc', 'tvnserver', 'chromeremotedesktophost', 'parsecd',
-    'wireshark', 'fiddler', 'charles', 'burpsuite'
+    'wireshark', 'fiddler', 'charles', 'burpsuite',
+    'tailscale-ipn', 'tailscaled', 'usblcd',
+    'claude', 'claude-cowork'
 )
 
 # NOTE: the original list also had OneDrive*, Dropbox*, Steam*, Zoom* here.
@@ -77,8 +84,9 @@ $script:HighRiskProcesses = @(
 # implying a stop action is happening when it isn't.
 $script:ServicesToStop = @(
     'TeamViewer*', 'AnyDesk*', 'VNC*', 'tvnserver',
-    'VMware*', 'VMUSBArbService', 'VirtualBox*', 'com.docker.service', 'Docker*',
-    'NordVPN*', 'ExpressVPN*', 'OpenVPN*', 'EaseUS*'
+    'VMware*', 'VMnetDHCP', 'VMUSBArbService', 'VirtualBox*', 'com.docker.service', 'Docker*',
+    'NordVPN*', 'ExpressVPN*', 'OpenVPN*', 'EaseUS*',
+    'Tailscale*', 'usblcd', 'cowork-svc'
 )
 
 # ============================================================================
@@ -329,9 +337,10 @@ $script:ServicesToStop = @(
             <TabItem Header="About">
                 <StackPanel Margin="16">
                     <TextBlock Text="OnVUE Exam Preparation Assistant" FontSize="16" FontWeight="Bold"/>
-                    <TextBlock Text="Version 1.1.0" Margin="0,2,0,12" Foreground="#666666"/>
+                    <TextBlock Text="Version 1.2.0" Margin="0,2,0,12" Foreground="#666666"/>
                     <TextBlock Text="Changelog" FontWeight="Bold" Margin="0,0,0,6"/>
-                    <TextBlock TextWrapping="Wrap" Text="1.1.0 - Added live system checks (monitor count, webcam, microphone) to the Summary tab, and a &quot;Relaunch as Admin&quot; button for self-elevation."/>
+                    <TextBlock TextWrapping="Wrap" Text="1.2.0 - Added vmnetdhcp (VMware DHCP Service), Tailscale, usblcd, and Claude/Cowork (cowork-svc) to the Critical and High-Risk lists, based on an actual OnVUE pre-launch block."/>
+                    <TextBlock TextWrapping="Wrap" Margin="0,0,0,10" Text="1.1.0 - Added live system checks (monitor count, webcam, microphone) to the Summary tab, and a &quot;Relaunch as Admin&quot; button for self-elevation."/>
                     <TextBlock TextWrapping="Wrap" Margin="0,0,0,10" Text="1.0.0 - WPF GUI rewrite of the original console script. Fixes vs. the original:"/>
                     <ItemsControl Margin="12,6,0,0">
                         <TextBlock TextWrapping="Wrap" Text="- Fixed VPN adapter detection - the original had an operator-precedence bug (-or/-and) that could false-positive on any VPN-named adapter regardless of status"/>

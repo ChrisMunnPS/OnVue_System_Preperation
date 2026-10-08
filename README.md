@@ -86,7 +86,7 @@ A persistent, timestamped log of every action taken, visible at all times at the
 ## 📥 Installation
 
 ### Option 1: Direct Download
-1. Download `OnVue_System_Preperation.ps1` from this repository
+1. Download `OnVUE-PrepAssistant.ps1` from this repository
 2. Save it to a convenient location (e.g., `C:\Scripts\` or your Desktop)
 3. Right-click the file and select **Run with PowerShell**
 
@@ -94,7 +94,7 @@ A persistent, timestamped log of every action taken, visible at all times at the
 ```powershell
 git clone https://github.com/ChrisMunnPS/OnVue_System_Preperation.git
 cd OnVue_System_Preperation
-.\OnVue_System_Preperation.ps1
+.\OnVUE-PrepAssistant.ps1
 ```
 
 ### Setting Execution Policy (if needed)
@@ -116,7 +116,7 @@ Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process
 
 ### Quick Start
 1. **Save all your open work** — the app will close applications you select
-2. Run `.\OnVue_System_Preperation.ps1` (as Administrator for full functionality, or use **Relaunch as Admin** inside the app)
+2. Run `.\OnVUE-PrepAssistant.ps1` (as Administrator for full functionality, or use **Relaunch as Admin** inside the app)
 3. Go to the **Pre-Flight** tab and click **Run Pre-Flight Check**
 4. Review what's found on the **Processes** and **Services** tabs, adjust checkboxes as needed
 5. Click **Run Full Preparation** in the header for an end-to-end pass, or work through tabs individually
@@ -160,10 +160,12 @@ Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process
 
 ### 🔴 Critical Processes (pre-selected)
 These will very likely interfere with proctoring:
-- **Virtual Machines**: VMware, VirtualBox, Hyper-V (`vmms`/`vmcompute`), Docker
+- **Virtual Machines**: VMware (incl. VMware DHCP Service), VirtualBox, Hyper-V (`vmms`/`vmcompute`), Docker
 - **Screen Recording**: OBS, XSplit, Bandicam, Camtasia, Snagit, Fraps
 - **Remote Desktop**: TeamViewer, AnyDesk, VNC, Chrome Remote Desktop, Parsec
 - **Network Analysis**: Wireshark, Fiddler, Charles Proxy, Burp Suite
+- **VPN mesh clients**: Tailscale
+- **Other**: `usblcd`, Claude/Claude Cowork (`cowork-svc`) — confirmed blockers per OnVUE's own pre-launch check
 
 ### 🟡 Standard Processes (opt-in)
 Recommended to close but not selected by default:
@@ -179,7 +181,7 @@ Recommended to close but not selected by default:
 Word, Excel, PowerPoint, Outlook — only closed if you enable this and confirm, since it risks unsaved work.
 
 ### ⚙️ Services (Administrator required)
-TeamViewer, AnyDesk, VNC, VMware, VirtualBox, Docker, NordVPN, ExpressVPN, OpenVPN, and EaseUS-related services, when actually running.
+TeamViewer, AnyDesk, VNC, VMware (including `VMnetDHCP`), VirtualBox, Docker, NordVPN, ExpressVPN, OpenVPN, Tailscale, `usblcd`, `cowork-svc`, and EaseUS-related services, when actually running.
 
 ---
 
@@ -240,6 +242,9 @@ Close it through its own interface first, stop its service if listed, or restart
 ---
 
 ## 📝 Changelog
+
+**1.2.0**
+- Added `vmnetdhcp` (VMware DHCP Service), Tailscale (`tailscale-ipn`/`tailscaled`), `usblcd`, and Claude/Cowork (`cowork-svc`) to the Critical and High-Risk lists — all four were confirmed by an actual OnVUE pre-launch block message, not just anticipated
 
 **1.1.0**
 - Added live system checks (monitor count, webcam, microphone) to the Summary tab
